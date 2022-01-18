@@ -60,6 +60,14 @@ func ErrorHandlingMiddleware(next http.Handler) http.Handler {
 						v.Errors,
 						v.Data,
 					).ToJSON(rw)
+				case error:
+					rw.WriteHeader(500)
+					NewBaseResponse(
+						500,
+						RESPONSE_ERROR_RUNTIME_MESSAGE,
+						NewErrorResponseData(NewErrorResponseValue("msg", v.Error())),
+						nil,
+					).ToJSON(rw)
 				default:
 					rw.WriteHeader(500)
 					NewBaseResponse(

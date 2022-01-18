@@ -67,7 +67,7 @@ func ErrorHandlingMiddleware(next http.Handler) http.Handler {
 						RESPONSE_ERROR_RUNTIME_MESSAGE,
 						NewErrorResponseData(NewErrorResponseValue("msg", "runtime error")),
 						nil,
-					)
+					).ToJSON(rw)
 				}
 			}
 		}()

@@ -51,14 +51,24 @@ func ErrorHandlingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
-				br := r.(*BaseResponse)
-				rw.WriteHeader(br.Code)
-				NewBaseResponse(
-					br.Code,
-					br.Message,
-					br.Errors,
-					br.Data,
-				).ToJSON(rw)
+				switch v := r.(type) {
+				case *BaseResponse:
+					rw.WriteHeader(v.Code)
+					NewBaseResponse(
+						v.Code,
+						v.Message,
+						v.Errors,
+						v.Data,
+					).ToJSON(rw)
+				default:
+					rw.WriteHeader(500)
+					NewBaseResponse(
+						500,
+						RESPONSE_ERROR_RUNTIME_MESSAGE,
+						NewErrorResponseData(NewErrorResponseValue("msg", "runtime error")),
+						nil,
+					)
+				}
 			}
 		}()
 		next.ServeHTTP(rw, r)

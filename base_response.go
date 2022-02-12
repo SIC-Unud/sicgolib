@@ -3,6 +3,7 @@ package sicgolib
 import (
 	"encoding/json"
 	"io"
+	"net/http"
 )
 
 type BaseResponse struct {
@@ -39,4 +40,9 @@ func NewErrorResponse(code int, message string, errors ...ErrorResponseValue) *B
 
 func (baseResponse *BaseResponse) ToJSON(w io.Writer) error {
 	return json.NewEncoder(w).Encode(baseResponse)
+}
+
+func (baseResponse *BaseResponse) SendResponse(rw *http.ResponseWriter) error {
+	(*rw).WriteHeader(baseResponse.Code)
+	return json.NewEncoder(*rw).Encode(baseResponse)
 }

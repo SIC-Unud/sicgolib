@@ -57,8 +57,8 @@ ParseImageFile returns byte file, multipart file header, and an error.
 This function will need *http.Request and an <form> <input> name as parameters.
 This function is used to parse file into file bytes that needed in order to work with UploadToImagekit function.
 */
-func ParseImageFile(r *http.Request, inputName string) ([]byte, *multipart.FileHeader, error) {
-	r.ParseMultipartForm(10 << 20)
+func ParseImageFile(r *http.Request, inputName string, maxFileSize int64) ([]byte, *multipart.FileHeader, error) {
+	r.ParseMultipartForm(maxFileSize)
 
 	file, handler, err := r.FormFile(inputName)
 

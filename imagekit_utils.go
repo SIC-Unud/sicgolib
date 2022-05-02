@@ -2,6 +2,7 @@ package sicgolib
 
 import (
 	"context"
+	"errors"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -60,6 +61,10 @@ This function is used to parse file into file bytes that needed in order to work
 Defining maxFileSize Example: (10 << 20) it will be around 10mb because (10 << 20) will be the same as (10 * (2^20)) = (10 * 1,048,576) = 10,048,576 around 10mb
 */
 func ParseImageFile(r *http.Request, inputName string, maxFileSize int64) ([]byte, *multipart.FileHeader, error) {
+	err := validateFileSize(maxFileSize)
+	if err != nil {
+		return nil, nil, err
+	}
 	r.ParseMultipartForm(maxFileSize)
 
 	file, handler, err := r.FormFile(inputName)
@@ -73,8 +78,16 @@ func ParseImageFile(r *http.Request, inputName string, maxFileSize int64) ([]byt
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Println("Error converting file: ", err)
+		log.Println("Error Converting File: ", err)
 		return nil, nil, err
 	}
 	return fileBytes, handler, nil
+}
+
+func validateFileSize(maxFileSize int64) error {
+	if maxFileSize < 1 {
+		err := errors.New("INVALID MEMORY SIZE")
+		return err
+	}
+	return nil
 }

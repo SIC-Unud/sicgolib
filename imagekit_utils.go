@@ -54,8 +54,10 @@ func UploadToImagekit(ctx context.Context, imageKitClient *imagekit.Client, publ
 
 /*
 ParseImageFile returns byte file, multipart file header, and an error.
-This function will need *http.Request and an <form> <input> name as parameters.
+This function will need *http.Request and an <form> <input> name from the Front-End as parameters.
+Example: <input type="file" name="inputName" accept="image/*" />.
 This function is used to parse file into file bytes that needed in order to work with UploadToImagekit function.
+Defining maxFileSize Example: (10 << 20) it will be around 10mb because (10 << 20) will be the same as (10 * (2^20)) = (10 * 1,048,576) = 10,048,576 around 10mb
 */
 func ParseImageFile(r *http.Request, inputName string, maxFileSize int64) ([]byte, *multipart.FileHeader, error) {
 	r.ParseMultipartForm(maxFileSize)

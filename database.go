@@ -17,7 +17,7 @@ func GetDatabase(dbAddress string, dbUsername string, dbPassword string, dbName 
 	log.Printf("INFO GetDatabase database connection: starting database connection process")
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true",
-																dbUsername, dbPassword, dbAddress, dbName)
+		dbUsername, dbPassword, dbAddress, dbName)
 
 	var (
 		db *sql.DB
